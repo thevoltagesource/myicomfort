@@ -1,4 +1,4 @@
-# PyPi - myicomfort
+# PyPI - myicomfort
 ### API Wrapper for www.myicomfort.com
 
 By Jacob Southard (https://github.com/thevoltagesource)  

@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="myicomfort",
-    version="0.1.6",
+    version="0.1.7",
     author="Jacob Southard",
     author_email="jacob@thevoltagesource.com",
     description="API Wrapper for myicomfort.com",
@@ -14,7 +14,6 @@ setuptools.setup(
     url="https://github.com/thevoltagesource/myicomfort",
     packages=['myicomfort'],
     install_requires=[
-        'logging',
         'requests'
     ],
     classifiers=[
