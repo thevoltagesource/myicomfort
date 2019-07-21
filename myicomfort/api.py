@@ -95,6 +95,13 @@ class Tstat():
             self.pull_status()
 
     @property
+    def connected(self):
+        """Return connected status."""
+        if self._serial_number is not None:
+            return True
+        return False
+
+    @property
     def state_list(self):
         """Return list of states."""
         return STATE_LIST
