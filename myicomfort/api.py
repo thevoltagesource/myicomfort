@@ -32,7 +32,9 @@ import requests
 
 _LOGGER = logging.getLogger(__name__)
 
-SERVICE_URL = "https://services.myicomfort.com/DBAcessService.svc/"
+
+LENNOX_SERVICE_URL = "https://services.myicomfort.com/DBAcessService.svc/"
+AIREASE_SERVICE_URL = "https://services.mycomfortsync.com/DBAcessService.svc/"
 
 OP_MODE_LIST = ['Off', 'Heat only', 'Cool only', 'Heat or Cool']
 FAN_MODE_LIST = ['Auto', 'On', 'Circulate']
@@ -43,9 +45,17 @@ TEMP_UNTIS_LIST = [chr(176) + 'F', chr(176) + 'C']
 class Tstat():
     """Representation of the Lennox iComfort thermostat."""
 
-    def __init__(self, username, password, system=0, zone=0, units=9):
+    def __init__(self, username, password,
+                 system=0, zone=0, svc='Lennox', units=9):
         """Initialize the API interface."""
         _LOGGER.info('Initializing Thermostat')
+
+        if svc.lower() == 'airease':
+            self._service_url = AIREASE_SERVICE_URL
+            _LOGGER.info('Connecting to AirEase MyComfortSync')
+        else:
+            self._service_url = LENNOX_SERVICE_URL
+            _LOGGER.info('Connecting to Lennox MyiComfort')
 
         # Service/system details.
         self._credentials = (username, password)
@@ -191,7 +201,7 @@ class Tstat():
     def away_mode(self, value):
         """Set away mode."""
         if self._serial_number is not None:
-            command_url = (SERVICE_URL
+            command_url = (self._service_url
                            + "SetAwayModeNew?gatewaysn="
                            + self._serial_number
                            + "&awaymode="
@@ -200,12 +210,12 @@ class Tstat():
             if resp.status_code == 200:
                 _LOGGER.debug(resp.json())
             else:
-                _LOGGER.error('MyiComfort cloud service not responding.')
+                _LOGGER.error('Thermostat cloud service not responding.')
 
     def pull_status(self):
         """Retrieve current thermostat status/settings."""
         if self._serial_number is not None:
-            command_url = (SERVICE_URL
+            command_url = (self._service_url
                            + "GetTStatInfoList?gatewaysn="
                            + self._serial_number
                            + "&TempUnit="
@@ -225,7 +235,7 @@ class Tstat():
                     except IndexError:
                         _LOGGER.error('No Zones Found.')
             else:
-                _LOGGER.error('MyiComfort cloud service not responding.')
+                _LOGGER.error('Thermostat cloud service not responding.')
 
             if self._use_tstat_units:
                 self._temperature_units = int(stat_info['Pref_Temp_Units'])
@@ -251,7 +261,7 @@ class Tstat():
                 'GatewaySN': self._serial_number
             }
 
-            command_url = SERVICE_URL + "SetTStatInfo"
+            command_url = self._service_url + "SetTStatInfo"
             headers = {'contentType': 'application/x-www-form-urlencoded',
                        'requestContentType': 'application/json; charset=utf-8'}
             resp = requests.put(command_url, auth=self._credentials,
@@ -259,11 +269,11 @@ class Tstat():
             if resp.status_code == 200:
                 _LOGGER.debug(resp.json())
             else:
-                _LOGGER.error('MyiComfort cloud service not responding.')
+                _LOGGER.error('Thermostat cloud service not responding.')
 
     def _get_serial_number(self):
         """Retrieve serial number for specified system."""
-        command_url = (SERVICE_URL
+        command_url = (self._service_url
                        + "GetSystemsInfo?UserId="
                        + self._credentials[0])
         resp = requests.get(command_url, auth=self._credentials)
@@ -285,4 +295,4 @@ class Tstat():
         elif resp.status_code == 401:
             _LOGGER.error('Username or password incorrect.')
         else:
-            _LOGGER.error('MyiComfort cloud service not responding.')
+            _LOGGER.error('Thermostat cloud service not responding.')
