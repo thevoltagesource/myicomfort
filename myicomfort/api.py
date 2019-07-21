@@ -1,6 +1,8 @@
 """
 Lennox iComfort Wifi API.
 
+Support added for AirEase MyComfortSync thermostats.
+
 By Jacob Southard (github.com/voltagesource)
 Based on the work done by Jerome Avondo (github.com/ut666)
 
@@ -22,6 +24,12 @@ Ideas/Future:
 
 Change log:
 
+v0.3.0 - Add support for AirEase cloud API.
+           New class attribute 'svc' allows selection of cloud API.
+           If svc='lennox' (defoult) API connects to Lennox MyiComfort.
+           If svc='airease' API connects to AirEase MyComffortSync.
+         Added connected property. Returns True if able to pull system info
+         from cloud API.
 v0.2.1 - Fix issue with set_points setter. Code cleanup.
 v0.2.0 - Initial Release
 
