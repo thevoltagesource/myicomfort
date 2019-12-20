@@ -24,6 +24,8 @@ Ideas/Future:
 
 Change log:
 
+v0.3.1 - Bug Fix - self.zone set to 0 after initial pull if cloud service fails
+                   to respond.
 v0.3.0 - Add support for AirEase cloud API.
            New class attribute 'svc' allows selection of cloud API.
            If svc='lennox' (defoult) API connects to Lennox MyiComfort.
@@ -95,7 +97,7 @@ class Tstat():
 
         # Connect to service and collect initial values.
         self._get_serial_number()
-        self.pull_status()
+        self.pull_status(True)
 
         # If we are using thermostat units we must re-request status now that
         # we know the appropriate units
@@ -227,7 +229,7 @@ class Tstat():
             else:
                 _LOGGER.error('Thermostat cloud service not responding.')
 
-    def pull_status(self):
+    def pull_status(self, initial=False):
         """Retrieve current thermostat status/settings."""
         if self._serial_number is not None:
             command_url = (self._service_url
@@ -235,33 +237,39 @@ class Tstat():
                            + self._serial_number
                            + "&TempUnit="
                            + str(self._temperature_units))
+            stat_info = None
             resp = requests.get(command_url, auth=self._credentials)
             if resp.status_code == 200:
                 _LOGGER.debug(resp.json())
                 try:
                     stat_info = resp.json()['tStatInfo'][self._zone]
                 except IndexError:
-                    _LOGGER.warning(
-                        "Specfied zone doesn't exist. Switching to first zone."
-                    )
-                    self._zone = 0
-                    try:
-                        stat_info = resp.json()['tStatInfo'][self._zone]
-                    except IndexError:
-                        _LOGGER.error('No Zones Found.')
+                    if initial:
+                        _LOGGER.warning(
+                            "Specfied zone doesn't exist. "
+                            "Switching to first zone."
+                        )
+                        self._zone = 0
+                        try:
+                            stat_info = resp.json()['tStatInfo'][self._zone]
+                        except IndexError:
+                            _LOGGER.error('No Zones Found.')
+                    else:
+                        _LOGGER.error('Problem pulling zone data')
             else:
                 _LOGGER.error('Thermostat cloud service not responding.')
 
-            if self._use_tstat_units:
-                self._temperature_units = int(stat_info['Pref_Temp_Units'])
-            self._state = int(stat_info['System_Status'])
-            self._op_mode = int(stat_info['Operation_Mode'])
-            self._fan_mode = int(stat_info['Fan_Mode'])
-            self._away_mode = int(stat_info['Away_Mode'])
-            self._current_temperature = float(stat_info['Indoor_Temp'])
-            self._current_humidity = float(stat_info['Indoor_Humidity'])
-            self._heat_to = float(stat_info['Heat_Set_Point'])
-            self._cool_to = float(stat_info['Cool_Set_Point'])
+            if stat_info is not None:
+                if self._use_tstat_units:
+                    self._temperature_units = int(stat_info['Pref_Temp_Units'])
+                self._state = int(stat_info['System_Status'])
+                self._op_mode = int(stat_info['Operation_Mode'])
+                self._fan_mode = int(stat_info['Fan_Mode'])
+                self._away_mode = int(stat_info['Away_Mode'])
+                self._current_temperature = float(stat_info['Indoor_Temp'])
+                self._current_humidity = float(stat_info['Indoor_Humidity'])
+                self._heat_to = float(stat_info['Heat_Set_Point'])
+                self._cool_to = float(stat_info['Cool_Set_Point'])
 
     def _push_settings(self):
         """Push settings to Lennox Cloud API."""
