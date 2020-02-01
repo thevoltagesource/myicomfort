@@ -275,7 +275,7 @@ class Tstat():
 
     def get_json(self, indent=None):
         """Return status as ordered JSON."""
-        data = {}
+        data = OrderedDict()
         self.pull_status()
         data["serial_number"] = self._serial_number
         data["state"] = self.state
