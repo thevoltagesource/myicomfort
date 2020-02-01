@@ -38,7 +38,9 @@ v0.2.0 - Initial Release
 """
 
 import logging
+import json
 import requests
+from collections import OrderedDict
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -270,6 +272,28 @@ class Tstat():
                 self._current_humidity = float(stat_info['Indoor_Humidity'])
                 self._heat_to = float(stat_info['Heat_Set_Point'])
                 self._cool_to = float(stat_info['Cool_Set_Point'])
+
+    def get_json(self, indent=None):
+        """Return status as ordered JSON."""
+        data = {}
+        self.pull_status()
+        data["serial_number"] = self._serial_number
+        data["state"] = self.state
+        data["state_text"] = self.state_list[self.state]
+        data["op_mode"] = self.op_mode
+        data["op_mode_text"] = self.op_mode_list[self.op_mode]
+        data["fan_mode"] = self.fan_mode
+        data["fan_mode_text"] = self.fan_mode_list[self._fan_mode]
+        data["away_mode"] = self.away_mode
+        data["temperature_units"] = self.temperature_units
+        data["temperature_units_text"] = self.temp_units_list[
+            self.temperature_units
+            ]
+        data["current_temperature"] = self.current_temperature
+        data["current_humidity"] = self.current_humidity
+        data["heat_to"] = self.set_points[0]
+        data["cool_to"] = self.set_points[1]
+        return json.dumps(data, indent=indent)
 
     def _push_settings(self):
         """Push settings to Lennox Cloud API."""
