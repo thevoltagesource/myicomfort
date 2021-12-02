@@ -42,7 +42,7 @@ t.set_points((68, 75))
 
 ##### Cloud API Response Notes:
 * Pref_Temp_Units: [0='F', 1='C']
-* Operation_Mode: [0='Off', 1='Heat only', 2='Cool only', 3='Heat & Cool']
+* Operation_Mode: [0='Off', 1='Heat only', 2='Cool only', 3='Heat & Cool', 4='Emergency Heat']
 * Fan_Mode: [0='Auto', 1='On', 2='Circulate']
 * System_Status: [0='Idle', 1='Heating', 2='Cooling']
 

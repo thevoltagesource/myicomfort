@@ -48,7 +48,7 @@ _LOGGER = logging.getLogger(__name__)
 LENNOX_SERVICE_URL = "https://services.myicomfort.com/DBAcessService.svc/"
 AIREASE_SERVICE_URL = "https://services.mycomfortsync.com/DBAcessService.svc/"
 
-OP_MODE_LIST = ['Off', 'Heat only', 'Cool only', 'Heat or Cool']
+OP_MODE_LIST = ['Off', 'Heat only', 'Cool only', 'Heat or Cool', 'Emergency Heat']
 FAN_MODE_LIST = ['Auto', 'On', 'Circulate']
 STATE_LIST = ['Idle', 'Heating', 'Cooling']
 TEMP_UNTIS_LIST = [chr(176) + 'F', chr(176) + 'C']
@@ -201,13 +201,13 @@ class Tstat():
                 self._cool_to = max(value)
             elif self._op_mode == 2:
                 self._cool_to = max(value)
-            elif self._op_mode == 1:
+            elif self._op_mode in (1, 4):
                 self._heat_to = min(value)
         elif isinstance(value, (float, int)):
             # If we were provided a single value, set temp for current mode.
             if self._op_mode == 2:
                 self._cool_to = value
-            elif self._op_mode == 1:
+            elif self._op_mode in (1, 4):
                 self._heat_to = value
         self._push_settings()
 
