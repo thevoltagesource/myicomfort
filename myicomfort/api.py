@@ -11,7 +11,7 @@ Notes:
 
 Cloud API Response Notes:
   Pref_Temp_Units: [0='F', 1='C']
-  Operation_Mode: [0='Off', 1='Heat only', 2='Cool only', 3='Heat & Cool']
+  Operation_Mode: [0='Off', 1='Heat only', 2='Cool only', 3='Heat & Cool', 4='Emergency Heat']
   Fan_Mode: [0='Auto', 1='On', 2='Circulate']
   System_Status: [0='Idle', 1='Heating', 2='Cooling']
 
@@ -24,6 +24,11 @@ Ideas/Future:
 
 Change log:
 
+v0.5.1 - Clean up - Add missing change logs and documentation.
+v0.5.0 - Feature - Add support for Emergency Heat mode. Changed set_points logic to properly 
+           handle mode=4.
+v0.4.1 - Bug Fix - Change get_json() to use OrderedDict per reature request.
+v0.4.0 - Feature - Add method get_json(). Returns current status as json.
 v0.3.1 - Bug Fix - self.zone set to 0 after initial pull if cloud service fails
                    to respond.
 v0.3.0 - Add support for AirEase cloud API.

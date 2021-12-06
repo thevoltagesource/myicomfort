@@ -17,6 +17,8 @@ AirEase Cloud API instead of the Lennox Cloud API.
 
 This was created primarly to provide an API for use with
 https://www.home-assistant.io/ but should work on any project you have in mind.
+For those using this in your own project, there is a get_json() method which 
+returns the current status of the thermostat in JSON format.
 
 ##### Class:  
 myicomfort.api.Tstat (username, password, system, zone, svc, units)
@@ -35,6 +37,8 @@ from myicomfort.api import Tstat
 t = Tstat('username', 'password', 0, 0, 'lennox', 0)
 t.current_temperature
 t.set_points((68, 75))
+t.pull_status()
+t.get_json()
 ```
 
 ##### Notes:
