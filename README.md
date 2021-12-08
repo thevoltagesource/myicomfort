@@ -48,9 +48,9 @@ t.get_json()
 * Pref_Temp_Units: [0='F', 1='C']
 * Operation_Mode: [0='Off', 1='Heat only', 2='Cool only', 3='Heat & Cool', 4='Emergency Heat']
 * Fan_Mode: [0='Auto', 1='On', 2='Circulate']
-* System_Status: [0='Idle', 1='Heating', 2='Cooling']
+* System_Status: [0='Idle', 1='Heating', 2='Cooling', 3='System Waiting']
 
 ##### Ideas/Future:
 * Support thermostat programs
 * Set Away temps - Research if possible through cloud API
-* Support other states - dehumidify / waiting
+* Support other states - dehumidify

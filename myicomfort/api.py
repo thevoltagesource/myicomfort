@@ -13,17 +13,19 @@ Cloud API Response Notes:
   Pref_Temp_Units: [0='F', 1='C']
   Operation_Mode: [0='Off', 1='Heat only', 2='Cool only', 3='Heat & Cool', 4='Emergency Heat']
   Fan_Mode: [0='Auto', 1='On', 2='Circulate']
-  System_Status: [0='Idle', 1='Heating', 2='Cooling']
+  System_Status: [0='Idle', 1='Heating', 2='Cooling', 3='System Waiting']
 
 Issues:
+  I don't have this thermostat anymore so I need to work with someone to add features.
 
 Ideas/Future:
   Support thermostat programs
   Set Away temps - Research if possible through cloud API
-  Support other states - dehumidify / waiting
+  Support other states - dehumidify
 
 Change log:
 
+v0.6.0 - System Waiting state idetified as state = 3. Added to state list.
 v0.5.1 - Clean up - Add missing change logs and documentation.
 v0.5.0 - Feature - Add support for Emergency Heat mode. Changed set_points logic to properly 
            handle mode=4.
@@ -55,7 +57,7 @@ AIREASE_SERVICE_URL = "https://services.mycomfortsync.com/DBAcessService.svc/"
 
 OP_MODE_LIST = ['Off', 'Heat only', 'Cool only', 'Heat or Cool', 'Emergency Heat']
 FAN_MODE_LIST = ['Auto', 'On', 'Circulate']
-STATE_LIST = ['Idle', 'Heating', 'Cooling']
+STATE_LIST = ['Idle', 'Heating', 'Cooling', 'System Waiting']
 TEMP_UNTIS_LIST = [chr(176) + 'F', chr(176) + 'C']
 
 
@@ -161,7 +163,7 @@ class Tstat():
 
     @property
     def op_mode_list(self):
-        """Return list of states."""
+        """Return list of operational modes."""
         return OP_MODE_LIST
 
     @property
