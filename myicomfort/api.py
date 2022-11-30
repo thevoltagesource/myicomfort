@@ -25,6 +25,7 @@ Ideas/Future:
 
 Change log:
 
+v0.7.0 - Expose system number, serial number, and zone as properties. 
 v0.6.0 - System Waiting state idetified as state = 3. Added to state list.
 v0.5.1 - Clean up - Add missing change logs and documentation.
 v0.5.0 - Feature - Add support for Emergency Heat mode. Changed set_points logic to properly 
@@ -120,6 +121,18 @@ class Tstat():
             return True
         return False
 
+    @property
+    def serial_number(self):
+        return self._serial_number
+    
+    @property
+    def zone(self):
+        return self._zone
+
+    @property
+    def system(self):
+        return self._system
+    
     @property
     def state_list(self):
         """Return list of states."""
